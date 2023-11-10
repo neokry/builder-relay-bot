@@ -22,8 +22,8 @@ COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
 
 ENV NODE_ENV=production
-RUN bun run build
+RUN bun run bundle.ts
 
 # run the app
 USER bun
-ENTRYPOINT [ "bun", "run", "./out/index.js" ]
+ENTRYPOINT [ "bun", "run", "index.ts" ]
