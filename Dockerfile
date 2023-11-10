@@ -21,6 +21,7 @@ FROM install AS release
 COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
 
+#hello
 ENV NODE_ENV=production
 RUN bun run bundle.ts
 
