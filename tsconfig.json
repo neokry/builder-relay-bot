@@ -17,5 +17,5 @@
     "types": ["bun-types"],
     "baseUrl": "."
   },
-  "include": ["src"]
+  "include": ["."]
 }
