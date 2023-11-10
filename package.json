@@ -1,19 +1,19 @@
 {
   "name": "builder-relayer-bot",
   "module": "index.ts",
-  "type": "module",
   "scripts": {
-    "dev": "bun run ./src/index.ts",
-    "start": "bun run ./out/index.js",
-    "build": "bun run ./bundle.ts"
+    "start": "ts-node ./src/index.ts"
   },
   "devDependencies": {
-    "bun-types": "^1.0.10"
+    "@types/node": "^20.9.0"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "dotenv": "^16.3.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2",
     "viem": "^1.18.9"
   }
 }

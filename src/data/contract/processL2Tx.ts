@@ -10,7 +10,7 @@ import { CHAIN_ID } from "../../constants/chains";
 import { getPublicClient } from "./getPublicClient";
 import { getWalletClient } from "./getWalletClient";
 import { l2CrossDomainMessengerAbi } from "./abis/L2CrossDomainMessenger";
-import { l2MigrationDeployerAbi } from "./abis/l2MigrationDeployerAbi";
+import { l2MigrationDeployerAbi } from "./abis/L2MigrationDeployerAbi";
 import {
   L2_CROSS_DOMAIN_MESSENGER,
   L2_MIGRATION_DEPLOYER,
