@@ -31,4 +31,4 @@ COPY --from=prerelease . .
 
 # run the app
 USER bun
-ENTRYPOINT [ "bun", "run", "index.js" ]
+ENTRYPOINT [ "bun", "run", "./src/index.js" ]
