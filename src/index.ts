@@ -4,8 +4,6 @@ import { watchForChain } from "./data/contract/watchForChain";
 
 if (process.env.NODE_ENV !== "production") config();
 
-console.log(process.env.PRIVATE_KEY);
-
 const run = async () => {
   try {
     await watchForChain({
