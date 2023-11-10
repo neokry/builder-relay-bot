@@ -3,8 +3,7 @@ import { watchForChain } from "./data/contract/watchForChain";
 
 try {
   await watchForChain({
-    l1ChainId: CHAIN_ID.GOERLI,
-    l2ChainId: CHAIN_ID.BASE_GOERLI,
+    chainId: CHAIN_ID.BASE_GOERLI,
   });
 } catch (err) {
   console.error("❌ Critical error", err);

@@ -1,30 +1,22 @@
 import { WatchEventReturnType } from "viem";
 import { CHAIN_ID } from "../../constants/chains";
-import { watchL1Deposit } from "./watchL1Deposit";
-import { L1CrossDomainMessenger } from "../../constants/addresses";
 import { processL2Tx } from "./processL2Tx";
 import { ICON_FOR_CHAIN } from "../../constants/icon";
+import { watchL2FailedRelay } from "./watchL2FailedRelay";
 
-export const watchForChain = async ({
-  l1ChainId,
-  l2ChainId,
-}: {
-  l1ChainId: CHAIN_ID;
-  l2ChainId: CHAIN_ID;
-}) => {
+export const watchForChain = async ({ chainId }: { chainId: CHAIN_ID }) => {
   return await new Promise((_, rej) => {
-    const icon = ICON_FOR_CHAIN[l2ChainId];
+    const icon = ICON_FOR_CHAIN[chainId];
 
-    console.log(`${icon} Starting relay for chain: ${l2ChainId}`);
+    console.log(`${icon} Starting relay for chain: ${chainId}`);
     let unsubscribe: WatchEventReturnType | undefined;
     try {
-      unsubscribe = watchL1Deposit({
+      unsubscribe = watchL2FailedRelay({
         icon,
-        chainId: l1ChainId,
-        l1CrossDomainMessenger: L1CrossDomainMessenger[l2ChainId],
-        handleL2HashesRecieved: (hashes) =>
+        chainId: chainId,
+        handleHashesRecieved: (hashes) =>
           Promise.allSettled(
-            hashes.map((x) => processL2Tx({ hash: x, chainId: l2ChainId }))
+            hashes.map((x) => processL2Tx({ hash: x, chainId: chainId }))
           ),
       });
     } catch (err) {

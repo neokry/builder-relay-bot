@@ -8,7 +8,9 @@ export const getPublicClient = (chainId: CHAIN_ID) => {
 
   const client = createPublicClient({
     chain: ALL_CHAINS.find((x) => x.id === chainId),
-    transport: http(),
+    transport: http(
+      `https://base-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`
+    ),
   });
 
   if (!client) throw new Error("No viem client found");

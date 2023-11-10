@@ -36,32 +36,7 @@ export const processL2Tx = async ({
   const icon = ICON_FOR_CHAIN[chainId];
 
   try {
-    console.log(`${icon} Waiting on inital relay attempt for hash ${hash}`);
-
     const publicClient = getPublicClient(chainId);
-
-    let txReciept;
-    let attempts = 0;
-    let minutesToWait = 2;
-    let maxAttempts = 5;
-
-    while (!txReciept) {
-      if (++attempts > maxAttempts) throw new Error(`Transaction not found`);
-      try {
-        txReciept = await publicClient.waitForTransactionReceipt({ hash });
-      } catch (err) {
-        await Bun.sleep(minutesToWait * 60_000); // Wait a few minutes
-      }
-    }
-
-    if (txReciept.status === "reverted") {
-      throw new Error(`Transaction reverted cannot relay`);
-    }
-
-    if (isRelaySuccessful(txReciept)) {
-      console.log(`${icon} Transaction already relayed for tx: ${hash}`);
-      return;
-    }
 
     const tx = await publicClient.getTransaction({ hash });
     if (!tx.to) throw new Error("Invalid transaction to relay");
@@ -74,7 +49,7 @@ export const processL2Tx = async ({
     });
 
     console.log(
-      `${icon} Using wallet with address: ${
+      `${icon} Processing with wallet: ${
         walletClient.account.address
       } and balance: ${formatEther(balance)} ETH to process tx: ${hash}`
     );
@@ -118,8 +93,10 @@ export const processL2Tx = async ({
     const gasMigrate = await publicClient.estimateContractGas(
       migration.request
     );
+    const bufferRatio = 10n;
+    const buffer = gasMigrate / bufferRatio;
 
-    const gasToUse = gasMigrate + 1_000_000n;
+    const gasToUse = gasMigrate + buffer;
 
     console.log(
       `${icon} Transaction ${hash} is valid, initiating relay with gas: `,
