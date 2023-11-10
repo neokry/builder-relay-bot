@@ -2,6 +2,9 @@
   "name": "builder-relayer-bot",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "start": "bun src/index.ts"
+  },
   "devDependencies": {
     "bun-types": "^1.0.10"
   },
