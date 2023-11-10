@@ -26,4 +26,4 @@ RUN bun run build
 
 # run the app
 USER bun
-ENTRYPOINT [ "bun", "run", "start" ]
+ENTRYPOINT [ "bun", "run", "./out/index.js" ]

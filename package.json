@@ -3,8 +3,8 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "dev": "bun ./src/index.ts",
-    "start": "bun ./out/index.js",
+    "dev": "bun run ./src/index.ts",
+    "start": "bun run ./out/index.js",
     "build": "bun run ./bundle.ts"
   },
   "devDependencies": {
