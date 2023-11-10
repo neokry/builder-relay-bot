@@ -29,4 +29,4 @@ COPY --from=prerelease /usr/src/app/package.json .
 
 # run the app
 USER bun
-ENTRYPOINT [ "bun", "run", "start" ]
+ENTRYPOINT [ "bun", "src/index.ts" ]
