@@ -1,6 +1,6 @@
 import { WalletClient, createWalletClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { ALL_CHAINS, CHAIN_ID } from "../../constants/chains";
+import { ALL_CHAINS, CHAIN_ID } from "../../../constants/chains";
 
 const map = new Map<CHAIN_ID, WalletClient>();
 

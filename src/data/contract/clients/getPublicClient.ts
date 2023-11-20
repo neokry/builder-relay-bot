@@ -1,5 +1,5 @@
 import { PublicClient, createPublicClient, http } from "viem";
-import { ALL_CHAINS, CHAIN_ID } from "../../constants/chains";
+import { ALL_CHAINS, CHAIN_ID } from "../../../constants/chains";
 
 const map = new Map<CHAIN_ID, PublicClient>();
 

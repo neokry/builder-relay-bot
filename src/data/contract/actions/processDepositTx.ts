@@ -6,16 +6,16 @@ import {
   formatEther,
   isAddressEqual,
 } from "viem";
-import { CHAIN_ID } from "../../constants/chains";
-import { getPublicClient } from "./getPublicClient";
-import { getWalletClient } from "./getWalletClient";
-import { l2CrossDomainMessengerAbi } from "./abis/L2CrossDomainMessenger";
-import { l2MigrationDeployerAbi } from "./abis/L2MigrationDeployerAbi";
+import { CHAIN_ID } from "../../../constants/chains";
+import { getPublicClient } from "../clients/getPublicClient";
+import { getWalletClient } from "../clients/getWalletClient";
+import { l2CrossDomainMessengerAbi } from "../abis/L2CrossDomainMessenger";
+import { l2MigrationDeployerAbi } from "../abis/L2MigrationDeployerAbi";
 import {
   L2_CROSS_DOMAIN_MESSENGER,
   L2_MIGRATION_DEPLOYER,
-} from "../../constants/addresses";
-import { ICON_FOR_CHAIN } from "../../constants/icon";
+} from "../../../constants/addresses";
+import { ICON_FOR_CHAIN } from "../../../constants/icon";
 
 export type RelayMessageArgs = [
   bigint,
@@ -26,7 +26,7 @@ export type RelayMessageArgs = [
   `0x${string}`
 ];
 
-export const processL2Tx = async ({
+export const processDepositTx = async ({
   hash,
   chainId,
 }: {
@@ -61,7 +61,19 @@ export const processL2Tx = async ({
 
     if (!xDomainArgs) throw new Error("Invalid calldata");
 
-    const [, , target, , , message] = xDomainArgs as RelayMessageArgs;
+    const [, sender, target, , , message] = xDomainArgs as RelayMessageArgs;
+
+    console.log("sender", sender);
+
+    // We need to alias the address to simulate properly
+    const senderAliased = await publicClient.readContract({
+      abi: l2MigrationDeployerAbi,
+      address: L2_MIGRATION_DEPLOYER,
+      functionName: "applyL1ToL2Alias",
+      args: [sender],
+    });
+
+    console.log("senderAliased", senderAliased);
 
     if (!isAddressEqual(target, L2_MIGRATION_DEPLOYER))
       throw new Error("Invalid target");
@@ -75,7 +87,7 @@ export const processL2Tx = async ({
 
     const [migration, relay] = await Promise.all([
       publicClient.simulateContract({
-        account: walletClient.account,
+        account: senderAliased,
         abi: l2MigrationDeployerAbi,
         address: L2_MIGRATION_DEPLOYER,
         functionName: functionName as any,

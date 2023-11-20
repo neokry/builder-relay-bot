@@ -65,6 +65,44 @@ export const l2MigrationDeployerAbi = [
     type: "event",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "deployer",
+        type: "address",
+      },
+    ],
+    name: "OwnershipRenounced",
+    type: "event",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "l1Address",
+        type: "address",
+      },
+    ],
+    name: "applyL1ToL2Alias",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "bytes",

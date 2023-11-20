@@ -1,7 +1,7 @@
 import { Address } from "viem";
 import { CHAIN_ID } from "./chains";
 
-export const L1CrossDomainMessenger = {
+export const L1_CROSS_DOMAIN_MESSENGER = {
   [CHAIN_ID.ETHEREUM]: "0x0" as Address,
   [CHAIN_ID.GOERLI]: "0x0" as Address,
   [CHAIN_ID.OPTIMISM]: "0x0" as Address,
@@ -17,4 +17,7 @@ export const L2_CROSS_DOMAIN_MESSENGER =
   "0x4200000000000000000000000000000000000007";
 
 export const L2_MIGRATION_DEPLOYER =
-  "0x699305aDF50CAffDC374067f37B8e2AF59814823";
+  "0xda55B6a4C132ff29a5C396a8A0EB4DB22c78C45A";
+
+export const MERKLE_RESERVE_MINTER =
+  "0x7CbbAa784F62Cf6Bc7a060398a768863D6b8cC70";

@@ -1,12 +1,12 @@
 import { Hash, decodeFunctionData, isAddressEqual, parseAbiItem } from "viem";
-import { CHAIN_ID } from "../../constants/chains";
-import { getPublicClient } from "./getPublicClient";
+import { CHAIN_ID } from "../../../constants/chains";
+import { getPublicClient } from "../clients/getPublicClient";
 import {
   L2_CROSS_DOMAIN_MESSENGER,
   L2_MIGRATION_DEPLOYER,
-} from "../../constants/addresses";
-import { l2CrossDomainMessengerAbi } from "./abis/L2CrossDomainMessenger";
-import { RelayMessageArgs } from "./processL2Tx";
+} from "../../../constants/addresses";
+import { l2CrossDomainMessengerAbi } from "../abis/L2CrossDomainMessenger";
+import { RelayMessageArgs } from "../actions/processDepositTx";
 
 export const watchL2FailedRelay = ({
   icon,
