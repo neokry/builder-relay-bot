@@ -2,9 +2,9 @@ import { WatchEventReturnType } from "viem";
 import { CHAIN_ID } from "../constants/chains";
 import { processDepositTx } from "../data/contract/actions/processDepositTx";
 import { ICON_FOR_CHAIN } from "../constants/icon";
-import { watchL2FailedRelay } from "../data/contract/watchers/watchL2FailedRelay";
 import { watchL2MigrationFinalizations } from "../data/contract/watchers/watchL2MigrationFinalizations";
 import { airdropForDAO } from "../data/contract/actions/airdropForDAO";
+import { watchL1Deposit } from "../data/contract/watchers/watchL1Deposit";
 
 export const watchChain = async ({ chainId }: { chainId: CHAIN_ID }) => {
   return await new Promise((_, rej) => {
@@ -23,13 +23,15 @@ export const watchChain = async ({ chainId }: { chainId: CHAIN_ID }) => {
       );
 
       unsubscribe.push(
-        watchL2FailedRelay({
+        watchL1Deposit({
           icon,
           chainId: chainId,
-          handleHashesRecieved: (hashes) =>
-            Promise.allSettled(
-              hashes.map((x) => processDepositTx({ hash: x, chainId: chainId }))
-            ),
+          handleL2HashesRecieved: async (hashes) => {
+            // Process hashes sequentially
+            for (const hash of hashes) {
+              await processDepositTx({ hash, chainId: chainId });
+            }
+          },
         })
       );
     } catch (err) {

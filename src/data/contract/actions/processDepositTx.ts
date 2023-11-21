@@ -105,10 +105,12 @@ export const processDepositTx = async ({
     const gasMigrate = await publicClient.estimateContractGas(
       migration.request
     );
+
+    const base = 80000n;
     const bufferRatio = 10n;
     const buffer = gasMigrate / bufferRatio;
 
-    const gasToUse = gasMigrate + buffer;
+    const gasToUse = base + gasMigrate + buffer;
 
     console.log(
       `${icon} Transaction ${hash} is valid, initiating relay with gas: `,

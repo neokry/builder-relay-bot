@@ -1,4 +1,10 @@
-import { Hash, decodeFunctionData, isAddressEqual, parseAbiItem } from "viem";
+import {
+  Hash,
+  Transaction,
+  decodeFunctionData,
+  isAddressEqual,
+  parseAbiItem,
+} from "viem";
 import { CHAIN_ID } from "../../../constants/chains";
 import { getPublicClient } from "../clients/getPublicClient";
 import {
@@ -22,10 +28,8 @@ export const watchL2FailedRelay = ({
   );
   const client = getPublicClient(chainId);
 
-  const validateTransaction = async (transactionHash: Hash) => {
-    const tx = await client.getTransaction({ hash: transactionHash });
-
-    console.log(`${icon} Validating tx: ${transactionHash}`);
+  const validateTransaction = async (tx: Transaction) => {
+    console.log(`${icon} Validating tx: ${tx.hash}`);
 
     const data = decodeFunctionData({
       abi: l2CrossDomainMessengerAbi,
@@ -35,18 +39,16 @@ export const watchL2FailedRelay = ({
     const [, , target] = data.args as RelayMessageArgs;
     if (data.functionName !== "relayMessage") {
       console.warn(
-        `${icon} Invalid function name ${data.functionName} for tx: ${transactionHash}`
+        `${icon} Invalid function name ${data.functionName} for tx: ${tx.hash}`
       );
       return false;
     }
     if (!isAddressEqual(target, L2_MIGRATION_DEPLOYER)) {
-      console.warn(
-        `${icon} Invalid target ${target} for tx: ${transactionHash}`
-      );
+      console.warn(`${icon} Invalid target ${target} for tx: ${tx.hash}`);
       return false;
     }
 
-    console.log(`${icon} Passed validation for tx: ${transactionHash}`);
+    console.log(`${icon} Passed validation for tx: ${tx.hash}`);
 
     return true;
   };
@@ -58,11 +60,24 @@ export const watchL2FailedRelay = ({
       try {
         console.log(`${icon} Found ${events.length} failed relay event(s)`);
         const allHashes = events.map((x) => x.transactionHash);
-        const isValid = await Promise.all(
-          allHashes.map((x) => validateTransaction(x))
+        const allTxs = await Promise.all(
+          allHashes.map((x) => client.getTransaction({ hash: x }))
         );
-        const hashes = allHashes.filter((_, i) => isValid[i]);
-        if (hashes.length > 0) handleHashesRecieved(hashes);
+
+        const isValid = await Promise.all(
+          allTxs.map((x) => validateTransaction(x))
+        );
+        const validTxs = allTxs.filter((_, i) => isValid[i]);
+
+        if (validTxs.length > 0) {
+          // Order transactions by nonce (these will all be system transactions so nonce will be unique)
+          // We want to preserve the order these are sent to the MessageRelayer
+          const validHashes = validTxs
+            .sort((a, b) => a.nonce - b.nonce)
+            .map((x) => x.hash);
+
+          handleHashesRecieved(validHashes);
+        }
       } catch (err) {
         console.error(`${icon} Failed to validate transactions`, err);
       }

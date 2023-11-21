@@ -1,10 +1,7 @@
-import { Address, parseAbiItem, parseEther } from "viem";
-import { CHAIN_ID } from "../../../constants/chains";
+import { Address, formatEther, parseAbiItem, parseEther } from "viem";
+import { CHAIN_ID, L1_CHAIN_ID } from "../../../constants/chains";
 import { getPublicClient } from "../clients/getPublicClient";
 import { L2_MIGRATION_DEPLOYER } from "../../../constants/addresses";
-
-const L1 =
-  process.env.NETWORK_TYPE === "testnet" ? CHAIN_ID.GOERLI : CHAIN_ID.ETHEREUM;
 
 export const watchL2MigrationFinalizations = ({
   icon,
@@ -16,19 +13,27 @@ export const watchL2MigrationFinalizations = ({
   handleDAODeployed: (address: Address) => void;
 }) => {
   console.log(
-    `${icon} Watching finalizations for address: ${L2_MIGRATION_DEPLOYER}`
+    `${icon} Watching finalizations for address: ${L2_MIGRATION_DEPLOYER} on chain ${chainId}`
   );
 
-  const l1Client = getPublicClient(L1);
+  const l1Client = getPublicClient(L1_CHAIN_ID);
   const l2Client = getPublicClient(chainId);
 
+  const MIN_BALANCE_TO_PROCESS = "0.01";
+
   // Only process DAOs with more than 5 ETH in treasury
-  const minBalanceToProcess = parseEther("0.01");
+  const minBalanceToProcess = parseEther(MIN_BALANCE_TO_PROCESS);
 
   const validateDeployer = async (deployer: Address) => {
     const l1Balance = await l1Client.getBalance({ address: deployer });
 
     if (l1Balance > minBalanceToProcess) return true;
+
+    console.log(
+      `L1 DAO ${deployer} balance: ${formatEther(
+        l1Balance
+      )} ETH less than min ${MIN_BALANCE_TO_PROCESS} ETH`
+    );
     return false;
   };
 

@@ -31,3 +31,6 @@ export const ALL_CHAINS: Chain[] = [
   zora,
   zoraTestnet,
 ];
+
+export const L1_CHAIN_ID =
+  process.env.NETWORK_TYPE === "testnet" ? CHAIN_ID.GOERLI : CHAIN_ID.ETHEREUM;
