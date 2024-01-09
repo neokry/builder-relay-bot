@@ -52,7 +52,6 @@ export const setMetadataAttributesForDAO = async ({
     const maxFailuresForBatch = 3;
 
     let numProcessed = 0;
-    let numMinted = 0;
     let failureCountForBatch = 0;
 
     while (numProcessed < list.length) {
