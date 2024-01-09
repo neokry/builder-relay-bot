@@ -17,6 +17,22 @@ export const merkleReserveMinterAbi = [
   },
   {
     inputs: [],
+    name: "CLAIM_ALREADY_USED",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "ERROR_MINTING_TOKEN",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "INVALID_CLAIM_COUNT",
     type: "error",
   },
@@ -59,6 +75,11 @@ export const merkleReserveMinterAbi = [
   {
     inputs: [],
     name: "NOT_TOKEN_OWNER",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NO_TOKENS_MINTED",
     type: "error",
   },
   {
@@ -264,6 +285,30 @@ export const merkleReserveMinterAbi = [
     name: "setMintSettings",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "usedClaims",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
 ] as const;

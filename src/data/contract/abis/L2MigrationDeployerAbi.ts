@@ -27,6 +27,11 @@ export const l2MigrationDeployerAbi = [
   },
   {
     inputs: [],
+    name: "METADATA_CALLS_NOT_EXECUTED",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "METADATA_CALL_FAILED",
     type: "error",
   },
@@ -123,12 +128,22 @@ export const l2MigrationDeployerAbi = [
         type: "address",
       },
     ],
-    name: "crossDomainDeployerToToken",
+    name: "crossDomainDeployerToMigration",
     outputs: [
       {
         internalType: "address",
-        name: "",
+        name: "tokenAddress",
         type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "minimumMetadataCalls",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "executedMetadataCalls",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -283,6 +298,16 @@ export const l2MigrationDeployerAbi = [
         internalType: "struct MerkleReserveMinter.MerkleMinterSettings",
         name: "_minterParams",
         type: "tuple",
+      },
+      {
+        internalType: "uint256",
+        name: "_delayedGovernanceAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_minimumMetadataCalls",
+        type: "uint256",
       },
     ],
     name: "deploy",
