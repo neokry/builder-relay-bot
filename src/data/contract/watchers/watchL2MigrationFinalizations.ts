@@ -1,4 +1,4 @@
-import { Address, formatEther, parseAbiItem, parseEther } from "viem";
+import { Address, formatEther, parseAbiItem } from "viem";
 import { CHAIN_ID, L1_CHAIN_ID } from "../../../constants/chains";
 import { getPublicClient } from "../clients/getPublicClient";
 import { L2_MIGRATION_DEPLOYER } from "../../../constants/addresses";
