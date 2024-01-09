@@ -19,15 +19,12 @@ export const watchL2MigrationFinalizations = ({
   const l1Client = getPublicClient(L1_CHAIN_ID);
   const l2Client = getPublicClient(chainId);
 
-  const MIN_BALANCE_TO_PROCESS = "0.01";
-
-  // Only process DAOs with more than 5 ETH in treasury
-  const minBalanceToProcess = parseEther(MIN_BALANCE_TO_PROCESS);
+  const MIN_BALANCE_TO_PROCESS = 0n;
 
   const validateDeployer = async (deployer: Address) => {
     const l1Balance = await l1Client.getBalance({ address: deployer });
 
-    if (l1Balance > minBalanceToProcess) return true;
+    if (l1Balance > MIN_BALANCE_TO_PROCESS) return true;
 
     console.log(
       `L1 DAO ${deployer} balance: ${formatEther(
