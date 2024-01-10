@@ -66,7 +66,7 @@ export const setMetadataAttributesForDAO = async ({
           token,
         });
 
-        numProcessed += batchSize;
+        numProcessed += batch.length;
         failureCountForBatch = 0;
       } catch (err) {
         if (failureCountForBatch++ > maxFailuresForBatch)
