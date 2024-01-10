@@ -140,7 +140,12 @@ const batchSetAttributes = async ({
     `${icon} Simulating successful now setting ${args.length} attributes for DAO: ${token}`
   );
 
-  const hash = await walletClient.writeContract(request);
+  const estimatedGas = await publicClient.estimateContractGas(request);
+
+  const bufferRatio = 3n;
+  const gasToUse = estimatedGas + estimatedGas / bufferRatio;
+
+  const hash = await walletClient.writeContract({ ...request, gas: gasToUse });
 
   await publicClient.waitForTransactionReceipt({ hash });
 
