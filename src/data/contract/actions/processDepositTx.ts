@@ -44,9 +44,9 @@ export const processDepositTx = async ({
     const txReceipt = await publicClient.waitForTransactionReceipt({ hash });
 
     // Transaction was already successful no need to relay
-    if (txReceipt.status == "success") {
+    if (txReceipt.status == "success" && isRelaySuccessful(txReceipt)) {
       console.log(
-        `${icon} Transaction: ${hash} was already successfully executed`
+        `${icon} Transaction: ${hash} was already successfully relayed`
       );
       return;
     }
