@@ -41,6 +41,16 @@ export const processDepositTx = async ({
     const tx = await publicClient.getTransaction({ hash });
     if (!tx.to) throw new Error("Invalid transaction to relay");
 
+    const txReceipt = await publicClient.waitForTransactionReceipt({ hash });
+
+    // Transaction was already successful no need to relay
+    if (txReceipt.status == "success") {
+      console.log(
+        `${icon} Transaction: ${hash} was already successfully executed`
+      );
+      return;
+    }
+
     const walletClient = getWalletClient(chainId);
     if (!walletClient.account) throw new Error("No account found");
 
@@ -63,8 +73,6 @@ export const processDepositTx = async ({
 
     const [, sender, target, , , message] = xDomainArgs as RelayMessageArgs;
 
-    console.log("sender", sender);
-
     // We need to alias the address to simulate properly
     const senderAliased = await publicClient.readContract({
       abi: l2MigrationDeployerAbi,
@@ -72,8 +80,6 @@ export const processDepositTx = async ({
       functionName: "applyL1ToL2Alias",
       args: [sender],
     });
-
-    console.log("senderAliased", senderAliased);
 
     if (!isAddressEqual(target, L2_MIGRATION_DEPLOYER))
       throw new Error("Invalid target");
