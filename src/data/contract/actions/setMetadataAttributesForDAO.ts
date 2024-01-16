@@ -6,6 +6,7 @@ import { merkleMetadataAbi } from "../abis/MerkleMetadataRenderer";
 import { tokenAbi } from "../abis/Token";
 import { getProof, getTree } from "lanyard";
 import { getWalletClient } from "../clients/getWalletClient";
+import { safeSendTransaction } from "src/utils/safeSendTransaction";
 
 interface AttributeListItem {
   attributes: readonly [
@@ -49,15 +50,13 @@ export const setMetadataAttributesForDAO = async ({
     console.log(`${icon} Found ${list.length} attributes for DAO: ${token}`);
 
     const batchSize = 10;
-    const maxFailuresForBatch = 3;
 
     let numProcessed = 0;
-    let failureCountForBatch = 0;
 
     while (numProcessed < list.length) {
-      try {
-        const batch = list.slice(numProcessed, numProcessed + batchSize);
+      const batch = list.slice(numProcessed, numProcessed + batchSize);
 
+      try {
         await batchSetAttributes({
           chainId,
           merkleRoot,
@@ -65,18 +64,13 @@ export const setMetadataAttributesForDAO = async ({
           metadata,
           token,
         });
-
-        numProcessed += batch.length;
-        failureCountForBatch = 0;
       } catch (err) {
-        if (failureCountForBatch++ > maxFailuresForBatch)
-          throw new Error("Set attribtues consistently failing");
-
-        console.warn(`${icon} Error setting attributes for batch: ${err}`);
-
-        // Wait 5 seconds before retrying
-        await new Promise((resolve) => setTimeout(resolve, 5000));
+        console.log(
+          `${icon} Batch failed moving on to next batch for DAO: ${token}`
+        );
       }
+
+      numProcessed += batch.length;
     }
 
     console.log(
@@ -140,17 +134,18 @@ const batchSetAttributes = async ({
     `${icon} Simulating successful now setting ${args.length} attributes for DAO: ${token}`
   );
 
-  const estimatedGas = await publicClient.estimateContractGas(request);
+  const gasEstimated = await publicClient.estimateContractGas(request);
 
-  const bufferRatio = 3n;
-  const gasToUse = estimatedGas + estimatedGas / bufferRatio;
-
-  const hash = await walletClient.writeContract({ ...request, gas: gasToUse });
-
-  await publicClient.waitForTransactionReceipt({ hash });
+  const txReceipt = await safeSendTransaction({
+    request,
+    gasBase: 0n,
+    gasBufferRatio: 3n,
+    gasEstimated,
+    chainId,
+  });
 
   console.log(
-    `${icon} Set attributes for ${batch.length} tokens for DAO: ${token} tx: ${hash}`
+    `${icon} Set attributes for ${batch.length} tokens for DAO: ${token} tx: ${txReceipt.transactionHash}`
   );
 };
 

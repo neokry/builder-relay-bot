@@ -7,6 +7,7 @@ import { Address, Hash, decodeAbiParameters, parseAbiParameters } from "viem";
 import { getWalletClient } from "../clients/getWalletClient";
 import { ICON_FOR_CHAIN } from "../../../constants/icon";
 import { tokenAbi } from "../abis/Token";
+import { safeSendTransaction } from "src/utils/safeSendTransaction";
 
 export interface AllowListItem {
   claimant: Address;
@@ -41,53 +42,46 @@ export const airdropForDAO = async ({
     if (list.length > 1000) throw new Error("Too many claims");
 
     const batchSize = 10;
-    const maxFailuresForBatch = 3;
 
     let numProcessed = 0;
     let numMinted = 0;
-    let failureCountForBatch = 0;
 
     while (numProcessed < list.length) {
-      try {
-        const batch = list.slice(numProcessed, numProcessed + batchSize);
+      const batch = list.slice(numProcessed, numProcessed + batchSize);
 
-        const baseCall = {
-          abi: tokenAbi,
-          address: token,
-          functionName: "ownerOf",
-        } as const;
+      const baseCall = {
+        abi: tokenAbi,
+        address: token,
+        functionName: "ownerOf",
+      } as const;
 
-        const contructedCalls = batch.map((x) => ({
-          ...baseCall,
-          args: [BigInt(x.tokenId)],
-        }));
+      const contructedCalls = batch.map((x) => ({
+        ...baseCall,
+        args: [BigInt(x.tokenId)],
+      }));
 
-        const res = await publicClient.multicall({
-          contracts: contructedCalls,
-        });
+      const res = await publicClient.multicall({
+        contracts: contructedCalls,
+      });
 
-        const isMinted = res.map((x) => !x.error);
+      const isMinted = res.map((x) => !x.error);
 
-        const validMints = batch
-          .filter((_, i) => !isMinted[i])
-          .filter((x) => x.tokenId < reservedUntil);
+      const validMints = batch
+        .filter((_, i) => !isMinted[i])
+        .filter((x) => x.tokenId < reservedUntil);
 
-        if (validMints.length > 0) {
+      if (validMints.length > 0) {
+        try {
           await airdropBatch({ merkleRoot, chainId, token, batch: validMints });
           numMinted += validMints.length;
+        } catch (err) {
+          console.log(
+            `${icon} Batch failed moving on to next batch for DAO: ${token}`
+          );
         }
-
-        numProcessed += batchSize;
-        failureCountForBatch = 0;
-      } catch (err) {
-        if (failureCountForBatch++ > maxFailuresForBatch)
-          throw new Error("Airdrop consistently failing");
-
-        console.warn(`${icon} Error airdropping batch: ${err}`);
-
-        // Wait 5 seconds before retrying
-        await new Promise((resolve) => setTimeout(resolve, 5000));
       }
+
+      numProcessed += batchSize;
     }
 
     console.log(
@@ -149,17 +143,18 @@ const airdropBatch = async ({
     `${icon} Simulating successful now minting ${claims.length} tokens for DAO: ${token}`
   );
 
-  const estimatedGas = await publicClient.estimateContractGas(request);
+  const gasEstimated = await publicClient.estimateContractGas(request);
 
-  const bufferRatio = 3n;
-  const gasToUse = estimatedGas + estimatedGas / bufferRatio;
-
-  const hash = await walletClient.writeContract({ ...request, gas: gasToUse });
-
-  await publicClient.waitForTransactionReceipt({ hash });
+  const txReceipt = await safeSendTransaction({
+    request,
+    gasBase: 0n,
+    gasBufferRatio: 3n,
+    gasEstimated,
+    chainId,
+  });
 
   console.log(
-    `${icon} Airdropped: ${batch.length} tokens for DAO: ${token} tx: ${hash}`
+    `${icon} Airdropped: ${batch.length} tokens for DAO: ${token} tx: ${txReceipt.transactionHash}`
   );
 };
 

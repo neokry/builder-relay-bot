@@ -16,6 +16,7 @@ import {
   L2_MIGRATION_DEPLOYER,
 } from "../../../constants/addresses";
 import { ICON_FOR_CHAIN } from "../../../constants/icon";
+import { safeSendTransaction } from "src/utils/safeSendTransaction";
 
 export type RelayMessageArgs = [
   bigint,
@@ -112,31 +113,19 @@ export const processDepositTx = async ({
       migration.request
     );
 
-    const base = 80000n;
-    const bufferRatio = 10n;
-    const buffer = gasMigrate / bufferRatio;
-
-    const gasToUse = base + gasMigrate + buffer;
-
-    console.log(
-      `${icon} Transaction ${hash} is valid, initiating relay with gas: `,
-      gasToUse
-    );
-
-    const newHash = await walletClient.writeContract({
-      ...relay.request,
-      gas: gasToUse,
-    });
-
-    const newTxReceipt = await publicClient.waitForTransactionReceipt({
-      hash: newHash,
+    const newTxReceipt = await safeSendTransaction({
+      request: relay.request,
+      gasBase: 80000n,
+      gasBufferRatio: 10n,
+      gasEstimated: gasMigrate,
+      chainId,
     });
 
     if (!isRelaySuccessful(newTxReceipt))
-      throw new Error(`Relayed failed, tx: ${newHash}`);
+      throw new Error(`Relayed failed, tx: ${newTxReceipt.transactionHash}`);
 
     console.log(
-      `${icon} Transaction relayed ogTx: ${hash} relayedTx: ${newHash}`
+      `${icon} Transaction relayed ogTx: ${hash} relayedTx: ${newTxReceipt.transactionHash}`
     );
   } catch (err) {
     console.error(`${icon} Failed to process tx: ${hash} with error: ${err}`);
