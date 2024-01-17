@@ -16,7 +16,7 @@ import {
   L2_MIGRATION_DEPLOYER,
 } from "../../../constants/addresses";
 import { ICON_FOR_CHAIN } from "../../../constants/icon";
-import { safeSendTransaction } from "src/utils/safeSendTransaction";
+import { safeSendTransaction } from "../../../utils/safeSendTransaction";
 
 export type RelayMessageArgs = [
   bigint,

@@ -7,7 +7,7 @@ import { Address, Hash, decodeAbiParameters, parseAbiParameters } from "viem";
 import { getWalletClient } from "../clients/getWalletClient";
 import { ICON_FOR_CHAIN } from "../../../constants/icon";
 import { tokenAbi } from "../abis/Token";
-import { safeSendTransaction } from "src/utils/safeSendTransaction";
+import { safeSendTransaction } from "../../../utils/safeSendTransaction";
 
 export interface AllowListItem {
   claimant: Address;

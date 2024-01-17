@@ -6,7 +6,7 @@ import { merkleMetadataAbi } from "../abis/MerkleMetadataRenderer";
 import { tokenAbi } from "../abis/Token";
 import { getProof, getTree } from "lanyard";
 import { getWalletClient } from "../clients/getWalletClient";
-import { safeSendTransaction } from "src/utils/safeSendTransaction";
+import { safeSendTransaction } from "../../../utils/safeSendTransaction";
 
 interface AttributeListItem {
   attributes: readonly [
