@@ -1,7 +1,7 @@
-import { CHAIN_ID } from "src/constants/chains";
-import { ICON_FOR_CHAIN } from "src/constants/icon";
-import { getPublicClient } from "src/data/contract/clients/getPublicClient";
-import { getWalletClient } from "src/data/contract/clients/getWalletClient";
+import { CHAIN_ID } from "../constants/chains";
+import { ICON_FOR_CHAIN } from "../constants/icon";
+import { getPublicClient } from "../data/contract/clients/getPublicClient";
+import { getWalletClient } from "../data/contract/clients/getWalletClient";
 import { TransactionReceipt, formatEther } from "viem";
 
 const maxFailures = 3;
