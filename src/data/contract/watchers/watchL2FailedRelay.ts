@@ -43,7 +43,7 @@ export const watchL2FailedRelay = ({
       );
       return false;
     }
-    if (!isAddressEqual(target, L2_MIGRATION_DEPLOYER)) {
+    if (!isAddressEqual(target, L2_MIGRATION_DEPLOYER[chainId])) {
       console.warn(`${icon} Invalid target ${target} for tx: ${tx.hash}`);
       return false;
     }

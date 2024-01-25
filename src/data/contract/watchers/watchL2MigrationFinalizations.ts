@@ -13,7 +13,7 @@ export const watchL2MigrationFinalizations = ({
   handleDAODeployed: (address: Address) => void;
 }) => {
   console.log(
-    `${icon} Watching finalizations for address: ${L2_MIGRATION_DEPLOYER} on chain ${chainId}`
+    `${icon} Watching finalizations for address: ${L2_MIGRATION_DEPLOYER[chainId]} on chain ${chainId}`
   );
 
   const l1Client = getPublicClient(L1_CHAIN_ID);
@@ -35,7 +35,7 @@ export const watchL2MigrationFinalizations = ({
   };
 
   return l2Client.watchEvent({
-    address: L2_MIGRATION_DEPLOYER,
+    address: L2_MIGRATION_DEPLOYER[chainId],
     event: parseAbiItem(
       "event OwnershipRenounced(address indexed token, address indexed deployer)"
     ),

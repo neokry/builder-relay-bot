@@ -134,7 +134,7 @@ const airdropBatch = async ({
     abi: merkleReserveMinterAbi,
     account: walletClient.account,
     chain: walletClient.chain,
-    address: MERKLE_RESERVE_MINTER,
+    address: MERKLE_RESERVE_MINTER[chainId],
     functionName: "mintFromReserve",
     args: [token, claims],
   });
@@ -169,7 +169,7 @@ const getAllowlist = async ({
   const [mintStart, mintEnd, pricePerToken, merkleRoot] =
     await publicClient.readContract({
       abi: merkleReserveMinterAbi,
-      address: MERKLE_RESERVE_MINTER,
+      address: MERKLE_RESERVE_MINTER[chainId],
       functionName: "allowedMerkles",
       args: [token],
     });

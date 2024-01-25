@@ -77,12 +77,12 @@ export const processDepositTx = async ({
     // We need to alias the address to simulate properly
     const senderAliased = await publicClient.readContract({
       abi: l2MigrationDeployerAbi,
-      address: L2_MIGRATION_DEPLOYER,
+      address: L2_MIGRATION_DEPLOYER[chainId],
       functionName: "applyL1ToL2Alias",
       args: [sender],
     });
 
-    if (!isAddressEqual(target, L2_MIGRATION_DEPLOYER))
+    if (!isAddressEqual(target, L2_MIGRATION_DEPLOYER[chainId]))
       throw new Error("Invalid target");
 
     const { args: l2MigrationArgs, functionName } = decodeFunctionData({
@@ -96,7 +96,7 @@ export const processDepositTx = async ({
       publicClient.simulateContract({
         account: senderAliased,
         abi: l2MigrationDeployerAbi,
-        address: L2_MIGRATION_DEPLOYER,
+        address: L2_MIGRATION_DEPLOYER[chainId],
         functionName: functionName as any,
         args: l2MigrationArgs,
       }),
