@@ -1,7 +1,10 @@
 import { Hash, parseAbiItem } from "viem";
 import { CHAIN_ID, L1_CHAIN_ID } from "../../../constants/chains";
 import { getPublicClient } from "../clients/getPublicClient";
-import { L1_CROSS_DOMAIN_MESSENGER } from "../../../constants/addresses";
+import {
+  L1_CROSS_DOMAIN_MESSENGER,
+  L2_MIGRATION_DEPLOYER,
+} from "../../../constants/addresses";
 import { publicL1OpStackActions } from "op-viem";
 
 export const watchL1Deposit = ({
@@ -53,6 +56,9 @@ export const watchL1Deposit = ({
     event: parseAbiItem(
       "event SentMessage(address indexed target, address sender, bytes message, uint256 messageNonce, uint256 gasLimit)"
     ),
+    args: {
+      target: L2_MIGRATION_DEPLOYER[chainId],
+    },
     onLogs: async (e) => {
       try {
         const uniqueL1Hashes = Array.from(

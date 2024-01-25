@@ -6,9 +6,14 @@ import { watchChain } from "./actions/watchChain";
 
 const run = async () => {
   try {
-    await watchChain({
-      chainId: CHAIN_ID.BASE_GOERLI,
-    });
+    await Promise.all([
+      watchChain({
+        chainId: CHAIN_ID.BASE_GOERLI,
+      }),
+      watchChain({
+        chainId: CHAIN_ID.OPTIMISM_GOERLI,
+      }),
+    ]);
   } catch (err) {
     console.error("❌ Critical error", err);
   } finally {

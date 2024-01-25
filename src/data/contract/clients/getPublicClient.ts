@@ -9,6 +9,8 @@ const getRpcUrl = (chainId: CHAIN_ID) => {
       return `https://eth-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`;
     case CHAIN_ID.BASE_GOERLI:
       return `https://base-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`;
+    case CHAIN_ID.OPTIMISM_GOERLI:
+      return `https://opt-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`;
     default:
       throw new Error("No RPC URL found for chain");
   }
