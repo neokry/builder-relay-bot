@@ -5,12 +5,14 @@ const map = new Map<CHAIN_ID, PublicClient>();
 
 const getRpcUrl = (chainId: CHAIN_ID) => {
   switch (chainId) {
-    case CHAIN_ID.GOERLI:
-      return `https://eth-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`;
-    case CHAIN_ID.BASE_GOERLI:
-      return `https://base-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`;
-    case CHAIN_ID.OPTIMISM_GOERLI:
-      return `https://opt-goerli.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`;
+    case CHAIN_ID.SEPOLIA:
+      return `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`;
+    case CHAIN_ID.BASE_SEPOLIA:
+      return `https://base-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`;
+    case CHAIN_ID.OPTIMISM_SEPOLIA:
+      return `https://opt-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`;
+    case CHAIN_ID.ZORA_SEPOLIA:
+      return `https://sepolia.rpc.zora.energy`;
     default:
       throw new Error("No RPC URL found for chain");
   }

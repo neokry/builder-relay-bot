@@ -1,36 +1,41 @@
 import {
   mainnet,
-  goerli,
+  sepolia,
   optimism,
-  optimismGoerli,
+  optimismSepolia,
   base,
-  baseGoerli,
+  baseSepolia,
   zora,
-  zoraTestnet,
+  zoraSepolia,
   Chain,
 } from "viem/chains";
 
 export const enum CHAIN_ID {
   ETHEREUM = 1,
-  GOERLI = 5,
+  SEPOLIA = 11155111,
   OPTIMISM = 10,
-  OPTIMISM_GOERLI = 420,
+  OPTIMISM_SEPOLIA = 11155420,
   BASE = 8453,
-  BASE_GOERLI = 84531,
+  BASE_SEPOLIA = 84532,
   ZORA = 7777777,
-  ZORA_GOERLI = 999,
+  ZORA_SEPOLIA = 999999999,
 }
 
 export const ALL_CHAINS: Chain[] = [
   mainnet,
-  goerli,
+  sepolia,
   optimism,
-  optimismGoerli,
+  optimismSepolia,
   base,
-  baseGoerli,
+  baseSepolia,
   zora,
-  zoraTestnet,
+  zoraSepolia,
 ];
 
-export const L1_CHAIN_ID =
-  process.env.NETWORK_TYPE === "testnet" ? CHAIN_ID.GOERLI : CHAIN_ID.ETHEREUM;
+const isTestnet = process.env.NETWORK_TYPE === "testnet";
+
+export const CHAINS_TO_WATCH = isTestnet
+  ? [CHAIN_ID.BASE_SEPOLIA, CHAIN_ID.OPTIMISM_SEPOLIA, CHAIN_ID.ZORA_SEPOLIA]
+  : [CHAIN_ID.BASE, CHAIN_ID.OPTIMISM, CHAIN_ID.ZORA];
+
+export const L1_CHAIN_ID = isTestnet ? CHAIN_ID.SEPOLIA : CHAIN_ID.ETHEREUM;

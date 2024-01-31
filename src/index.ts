@@ -1,19 +1,18 @@
 import { config } from "dotenv";
 if (process.env.NODE_ENV !== "production") config();
 
-import { CHAIN_ID } from "./constants/chains";
+import { CHAINS_TO_WATCH } from "./constants/chains";
 import { watchChain } from "./actions/watchChain";
 
 const run = async () => {
   try {
-    await Promise.all([
-      watchChain({
-        chainId: CHAIN_ID.BASE_GOERLI,
-      }),
-      watchChain({
-        chainId: CHAIN_ID.OPTIMISM_GOERLI,
-      }),
-    ]);
+    await Promise.all(
+      CHAINS_TO_WATCH.map((chainId) =>
+        watchChain({
+          chainId,
+        })
+      )
+    );
   } catch (err) {
     console.error("❌ Critical error", err);
   } finally {
