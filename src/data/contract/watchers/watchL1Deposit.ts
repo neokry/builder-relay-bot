@@ -1,11 +1,11 @@
 import { Hash, parseAbiItem } from "viem";
+import { getL2TransactionHashes } from "viem/op-stack";
 import { CHAIN_ID, L1_CHAIN_ID } from "../../../constants/chains";
 import { getPublicClient } from "../clients/getPublicClient";
 import {
   L1_CROSS_DOMAIN_MESSENGER,
   L2_MIGRATION_DEPLOYER,
 } from "../../../constants/addresses";
-import { publicL1OpStackActions } from "op-viem";
 
 export const watchL1Deposit = ({
   icon,
@@ -22,14 +22,17 @@ export const watchL1Deposit = ({
     `${icon} Watching deposit events for address: ${l1CrossDomainMessenger} on chain: ${l1ChainId}`
   );
 
-  const l1Client = getPublicClient(l1ChainId).extend(publicL1OpStackActions);
-  const l2Client = getPublicClient(chainId).extend(publicL1OpStackActions);
+  const l1Client = getPublicClient(l1ChainId);
+  const l2Client = getPublicClient(chainId);
 
   const getL2Hashes = async (transactionHash: Hash) => {
     console.log(`${icon} Found deposit tx: ${transactionHash}`);
-    const hashes = await l1Client.getL2HashesForDepositTx({
-      l1TxHash: transactionHash,
+
+    const receipt = await l1Client.waitForTransactionReceipt({
+      hash: transactionHash,
     });
+
+    const hashes = await getL2TransactionHashes(receipt);
 
     console.log(`${icon} Found L2 hashes: ${hashes}, waiting for inital relay`);
 

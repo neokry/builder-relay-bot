@@ -21,13 +21,22 @@ export const enum CHAIN_ID {
   ZORA_SEPOLIA = 999999999,
 }
 
+const baseSeploiaWithMulticall: any = baseSepolia;
+
+baseSeploiaWithMulticall.contracts = {
+  multicall3: {
+    address: "0xca11bde05977b3631167028862be2a173976ca11",
+    blockCreated: 1059647,
+  },
+};
+
 export const ALL_CHAINS: Chain[] = [
   mainnet,
   sepolia,
   optimism,
   optimismSepolia,
   base,
-  baseSepolia,
+  baseSeploiaWithMulticall,
   zora,
   zoraSepolia,
 ];
