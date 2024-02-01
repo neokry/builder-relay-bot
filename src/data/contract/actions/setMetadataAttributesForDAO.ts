@@ -49,7 +49,7 @@ export const setMetadataAttributesForDAO = async ({
 
     console.log(`${icon} Found ${list.length} attributes for DAO: ${token}`);
 
-    const batchSize = 10;
+    const batchSize = 50;
 
     let numProcessed = 0;
 
@@ -65,6 +65,10 @@ export const setMetadataAttributesForDAO = async ({
           token,
         });
       } catch (err) {
+        if ((err as Error).message.includes("Insufficient balance")) {
+          throw new Error("Insufficient balance");
+        }
+
         console.log(
           `${icon} Batch failed moving on to next batch for DAO: ${token}`
         );

@@ -41,7 +41,7 @@ export const airdropForDAO = async ({
 
     if (list.length > 1000) throw new Error("Too many claims");
 
-    const batchSize = 10;
+    const batchSize = 20;
 
     let numProcessed = 0;
     let numMinted = 0;
@@ -75,6 +75,10 @@ export const airdropForDAO = async ({
           await airdropBatch({ merkleRoot, chainId, token, batch: validMints });
           numMinted += validMints.length;
         } catch (err) {
+          if ((err as Error).message.includes("Insufficient balance")) {
+            throw new Error("Insufficient balance");
+          }
+
           console.log(
             `${icon} Batch failed moving on to next batch for DAO: ${token}`
           );

@@ -36,6 +36,8 @@ export const safeSendTransaction = async ({
 
   const gas = gasBase + gasEstimated + gasEstimated / gasBufferRatio;
 
+  if (gas > balance) throw new Error("Insufficient balance");
+
   console.log(
     `${icon} Sending tx with wallet: ${
       walletClient.account.address
