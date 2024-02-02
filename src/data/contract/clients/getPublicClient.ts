@@ -13,6 +13,14 @@ const getRpcUrl = (chainId: CHAIN_ID) => {
       return `https://opt-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`;
     case CHAIN_ID.ZORA_SEPOLIA:
       return `https://sepolia.rpc.zora.energy`;
+    case CHAIN_ID.ETHEREUM:
+      return `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`;
+    case CHAIN_ID.BASE:
+      return `https://base-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`;
+    case CHAIN_ID.OPTIMISM:
+      return `https://opt-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`;
+    case CHAIN_ID.ZORA:
+      return `https://rpc.zora.energy`;
     default:
       throw new Error("No RPC URL found for chain");
   }
