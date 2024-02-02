@@ -49,7 +49,7 @@ export const setMetadataAttributesForDAO = async ({
 
     console.log(`${icon} Found ${list.length} attributes for DAO: ${token}`);
 
-    const batchSize = 50;
+    const batchSize = 100;
 
     let numProcessed = 0;
 

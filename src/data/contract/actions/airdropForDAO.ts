@@ -41,7 +41,7 @@ export const airdropForDAO = async ({
 
     if (list.length > 1000) throw new Error("Too many claims");
 
-    const batchSize = 20;
+    const batchSize = 30;
 
     let numProcessed = 0;
     let numMinted = 0;
